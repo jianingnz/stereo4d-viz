@@ -266,6 +266,24 @@ function f16ToF32(h) {
   if (e === 0x1f) return f ? NaN : (s ? -Infinity : Infinity);
   return (s ? -1 : 1) * Math.pow(2, e - 15) * (1 + f / 1024);
 }
+function transposeToCOrder(flat, shape) {
+  // Convert Fortran-ordered (first-axis-fastest) data to C-order (last-axis-fastest).
+  const total = shape.reduce((a, b) => a * b, 1);
+  if (total === 0 || shape.length < 2) return flat;
+  const out = new flat.constructor(total);
+  const nd = shape.length;
+  const fStrides = new Array(nd);
+  let s = 1;
+  for (let i = 0; i < nd; i++) { fStrides[i] = s; s *= shape[i]; }
+  const idx = new Array(nd).fill(0);
+  for (let c = 0; c < total; c++) {
+    let f = 0;
+    for (let i = 0; i < nd; i++) f += idx[i] * fStrides[i];
+    out[c] = flat[f];
+    for (let i = nd - 1; i >= 0; i--) { idx[i]++; if (idx[i] < shape[i]) break; idx[i] = 0; }
+  }
+  return out;
+}
 function parseNpy(ab) {
   const dv = new DataView(ab);
   const major = dv.getUint8(6);
@@ -275,6 +293,7 @@ function parseNpy(ab) {
   const headerStart = major === 1 ? 10 : 12;
   const hdr = new TextDecoder().decode(new Uint8Array(ab, headerStart, headerLen));
   const dtype = hdr.match(/'descr':\s*'([^']+)'/)[1];
+  const fortran = /'fortran_order':\s*True/.test(hdr);
   const shapeStr = hdr.match(/'shape':\s*\(([^)]*)\)/)[1].trim().replace(/,\s*$/, '');
   const shape = shapeStr ? shapeStr.split(',').map(s => +s.trim()) : [];
   const body = ab.slice(dataStart);
@@ -286,6 +305,7 @@ function parseNpy(ab) {
   else if (dtype === '|b1') data = new Uint8Array(body);
   else if (dtype === '<i4' || dtype === '<i8' || dtype === '<i2' || dtype === '<i1') data = new Int32Array(body);
   else throw new Error('unsupported dtype: ' + dtype);
+  if (fortran) data = transposeToCOrder(data, shape);
   return { data, shape };
 }
 function nestedFromFlat(flat, shape) {
