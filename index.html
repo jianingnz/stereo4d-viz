@@ -758,33 +758,37 @@ function draw2DFrame(fracFrame) {
 
   for (let n = 0; n < N; n++) {
     if (!vis[fi][n]) continue;
-    const trailPts = [], trailAlphas = [];
-    for (let t = ts; t <= fi; t++) {
-      if (!vis[t][n]) continue;
-      trailPts.push([tracks[t][n][0], tracks[t][n][1]]);
-      trailAlphas.push((t - ts) / TRAIL_2D);
-    }
-    if (fi < T - 1 && frac > 0 && vis[fiNext][n]) {
-      const lx = tracks[fi][n][0] + (tracks[fiNext][n][0] - tracks[fi][n][0]) * frac;
-      const ly = tracks[fi][n][1] + (tracks[fiNext][n][1] - tracks[fi][n][1]) * frac;
-      trailPts.push([lx, ly]); trailAlphas.push(1.0);
-    }
     const col = v.colorsHex[n];
-    if (trailPts.length >= 2) {
-      const sm = interpolateSpline2D(trailPts, SPLINE_SUBDIV);
+    // Build contiguous-visible segments of the trail; flush each one as its own
+    // spline-smoothed polyline. Prevents long chord lines across invisibility gaps.
+    const flushSeg = (seg, alphas) => {
+      if (seg.length < 2) return;
+      const sm = interpolateSpline2D(seg, SPLINE_SUBDIV);
       ctx.lineWidth = 1.6; ctx.strokeStyle = col;
       ctx.lineCap = 'round'; ctx.lineJoin = 'round';
       for (let s = 1; s < sm.length; s++) {
-        const ai = (s / sm.length) * (trailAlphas.length - 1);
-        const af = Math.floor(ai), ac = Math.min(af + 1, trailAlphas.length - 1);
-        const a = trailAlphas[af] + (trailAlphas[ac] - trailAlphas[af]) * (ai - af);
+        const ai = (s / sm.length) * (alphas.length - 1);
+        const af = Math.floor(ai), ac = Math.min(af + 1, alphas.length - 1);
+        const a = alphas[af] + (alphas[ac] - alphas[af]) * (ai - af);
         ctx.globalAlpha = 0.3 + 0.6 * a;
         ctx.beginPath();
         ctx.moveTo(sm[s-1][0]*scale+rx, sm[s-1][1]*scale+ry);
         ctx.lineTo(sm[s][0]*scale+rx, sm[s][1]*scale+ry);
         ctx.stroke();
       }
+    };
+    let seg = [], alphas = [];
+    for (let t = ts; t <= fi; t++) {
+      if (!vis[t][n]) { flushSeg(seg, alphas); seg = []; alphas = []; continue; }
+      seg.push([tracks[t][n][0], tracks[t][n][1]]);
+      alphas.push((t - ts) / TRAIL_2D);
     }
+    if (fi < T - 1 && frac > 0 && vis[fi][n] && vis[fiNext][n]) {
+      const lx = tracks[fi][n][0] + (tracks[fiNext][n][0] - tracks[fi][n][0]) * frac;
+      const ly = tracks[fi][n][1] + (tracks[fiNext][n][1] - tracks[fi][n][1]) * frac;
+      seg.push([lx, ly]); alphas.push(1.0);
+    }
+    flushSeg(seg, alphas);
     let dx, dy;
     if (fi < T - 1 && frac > 0 && vis[fiNext][n]) {
       dx = tracks[fi][n][0] + (tracks[fiNext][n][0] - tracks[fi][n][0]) * frac;
