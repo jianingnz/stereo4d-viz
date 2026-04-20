@@ -776,46 +776,64 @@ function draw2DFrame(fracFrame) {
   const frac = fracFrame - Math.floor(fracFrame);
   const ts = Math.max(0, fi - TRAIL_2D);
 
+  // Draw algorithm copied from _GenTraj/viz_website (trailPts gather -> spline -> line)
+  // with per-cluster colour. Relies on tracks2d holding NaN for invalid observations,
+  // and on vis2d for the "visible right now" gate.
   for (let n = 0; n < N; n++) {
-    if (!vis[fi][n]) continue;
+    const vv = vis ? vis[fi][n] : true;
+    if (!vv) continue;
+
+    const trailPts = [];
+    const trailAlphas = [];
+    for (let t = ts; t <= fi; t++) {
+      const tv = vis ? vis[t][n] : true;
+      if (!tv || isNaN(tracks[t][n][0])) continue;
+      trailPts.push([tracks[t][n][0], tracks[t][n][1]]);
+      trailAlphas.push((t - ts) / TRAIL_2D);
+    }
+    if (fi < T - 1 && frac > 0) {
+      const vn = vis ? vis[fiNext][n] : true;
+      if (vn && !isNaN(tracks[fiNext][n][0])) {
+        const lx = tracks[fi][n][0] + (tracks[fiNext][n][0] - tracks[fi][n][0]) * frac;
+        const ly = tracks[fi][n][1] + (tracks[fiNext][n][1] - tracks[fi][n][1]) * frac;
+        trailPts.push([lx, ly]);
+        trailAlphas.push(1.0);
+      }
+    }
+
     const col = v.colorsHex[n];
-    // Build contiguous-visible segments of the trail; flush each one as its own
-    // spline-smoothed polyline. Prevents long chord lines across invisibility gaps.
-    const flushSeg = (seg, alphas) => {
-      if (seg.length < 2) return;
-      const sm = interpolateSpline2D(seg, SPLINE_SUBDIV);
-      ctx.lineWidth = 1.6; ctx.strokeStyle = col;
+    if (trailPts.length >= 2) {
+      const smoothed = interpolateSpline2D(trailPts, SPLINE_SUBDIV);
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = col;
       ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-      for (let s = 1; s < sm.length; s++) {
-        const ai = (s / sm.length) * (alphas.length - 1);
-        const af = Math.floor(ai), ac = Math.min(af + 1, alphas.length - 1);
-        const a = alphas[af] + (alphas[ac] - alphas[af]) * (ai - af);
-        ctx.globalAlpha = 0.3 + 0.6 * a;
+      for (let s = 1; s < smoothed.length; s++) {
+        const alphaIdx = (s / smoothed.length) * (trailAlphas.length - 1);
+        const aFloor = Math.floor(alphaIdx);
+        const aCeil = Math.min(aFloor + 1, trailAlphas.length - 1);
+        const aFrac = alphaIdx - aFloor;
+        const alpha = trailAlphas[aFloor] + (trailAlphas[aCeil] - trailAlphas[aFloor]) * aFrac;
+        ctx.globalAlpha = 0.15 + 0.6 * alpha;
         ctx.beginPath();
-        ctx.moveTo(sm[s-1][0]*scale+rx, sm[s-1][1]*scale+ry);
-        ctx.lineTo(sm[s][0]*scale+rx, sm[s][1]*scale+ry);
+        ctx.moveTo(smoothed[s-1][0]*scale+rx, smoothed[s-1][1]*scale+ry);
+        ctx.lineTo(smoothed[s][0]*scale+rx, smoothed[s][1]*scale+ry);
         ctx.stroke();
       }
-    };
-    let seg = [], alphas = [];
-    for (let t = ts; t <= fi; t++) {
-      if (!vis[t][n]) { flushSeg(seg, alphas); seg = []; alphas = []; continue; }
-      seg.push([tracks[t][n][0], tracks[t][n][1]]);
-      alphas.push((t - ts) / TRAIL_2D);
     }
-    if (fi < T - 1 && frac > 0 && vis[fi][n] && vis[fiNext][n]) {
-      const lx = tracks[fi][n][0] + (tracks[fiNext][n][0] - tracks[fi][n][0]) * frac;
-      const ly = tracks[fi][n][1] + (tracks[fiNext][n][1] - tracks[fi][n][1]) * frac;
-      seg.push([lx, ly]); alphas.push(1.0);
+
+    let dotX, dotY;
+    if (fi < T - 1 && frac > 0 && (vis ? vis[fiNext][n] : true) && !isNaN(tracks[fiNext][n][0])) {
+      dotX = tracks[fi][n][0] + (tracks[fiNext][n][0] - tracks[fi][n][0]) * frac;
+      dotY = tracks[fi][n][1] + (tracks[fiNext][n][1] - tracks[fi][n][1]) * frac;
+    } else {
+      dotX = tracks[fi][n][0]; dotY = tracks[fi][n][1];
     }
-    flushSeg(seg, alphas);
-    let dx, dy;
-    if (fi < T - 1 && frac > 0 && vis[fiNext][n]) {
-      dx = tracks[fi][n][0] + (tracks[fiNext][n][0] - tracks[fi][n][0]) * frac;
-      dy = tracks[fi][n][1] + (tracks[fiNext][n][1] - tracks[fi][n][1]) * frac;
-    } else { dx = tracks[fi][n][0]; dy = tracks[fi][n][1]; }
-    ctx.globalAlpha = 1.0; ctx.fillStyle = col;
-    ctx.beginPath(); ctx.arc(dx*scale+rx, dy*scale+ry, 2.5, 0, Math.PI*2); ctx.fill();
+    if (isNaN(dotX) || isNaN(dotY)) continue;
+    ctx.globalAlpha = 0.85;
+    ctx.fillStyle = col;
+    ctx.beginPath();
+    ctx.arc(dotX*scale+rx, dotY*scale+ry, 2, 0, Math.PI*2);
+    ctx.fill();
   }
   ctx.globalAlpha = 1;
 }
