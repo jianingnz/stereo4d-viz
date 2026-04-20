@@ -1,0 +1,1010 @@
+{
+  "source": "processed/ bundles -> strict max_jump<0.3m + Louvain post-merge to <=3 objects",
+  "filter": {
+    "max_jump_m": 0.3,
+    "max_objects": 3,
+    "min_tracks_after": 10
+  },
+  "clips": [
+    {
+      "id": "JNPfON6PxH0_652619286",
+      "description": "a white bird flies to the right",
+      "n_objects": 2,
+      "n_tracks": 448,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/JNPfON6PxH0_652619286.mp4",
+      "data_url": "clips/JNPfON6PxH0_652619286.npz"
+    },
+    {
+      "id": "-oLcmfK_hFY_61795128",
+      "description": "a person rides a bicycle to the right",
+      "n_objects": 3,
+      "n_tracks": 773,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/-oLcmfK_hFY_61795128.mp4",
+      "data_url": "clips/-oLcmfK_hFY_61795128.npz"
+    },
+    {
+      "id": "LWheosMBIwU_890457124",
+      "description": "a marching band plays music while walking down the street",
+      "n_objects": 3,
+      "n_tracks": 236,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/LWheosMBIwU_890457124.mp4",
+      "data_url": "clips/LWheosMBIwU_890457124.npz"
+    },
+    {
+      "id": "d22qZf7O34s_129262596",
+      "description": "a person runs to the right",
+      "n_objects": 1,
+      "n_tracks": 16,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/d22qZf7O34s_129262596.mp4",
+      "data_url": "clips/d22qZf7O34s_129262596.npz"
+    },
+    {
+      "id": "xJG9U2KJwyA_831831832",
+      "description": "a person walks to the right",
+      "n_objects": 1,
+      "n_tracks": 44,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/xJG9U2KJwyA_831831832.mp4",
+      "data_url": "clips/xJG9U2KJwyA_831831832.npz"
+    },
+    {
+      "id": "oNMgziAU1RQ_55080000",
+      "description": "a yellow taxi drives to the right",
+      "n_objects": 2,
+      "n_tracks": 1112,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/oNMgziAU1RQ_55080000.mp4",
+      "data_url": "clips/oNMgziAU1RQ_55080000.npz"
+    },
+    {
+      "id": "J1vbghqFaMY_376509843",
+      "description": "a black car drives to the right",
+      "n_objects": 1,
+      "n_tracks": 11,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/J1vbghqFaMY_376509843.mp4",
+      "data_url": "clips/J1vbghqFaMY_376509843.npz"
+    },
+    {
+      "id": "4rzwFR-prqk_421087754",
+      "description": "a group of people wearing snowman costumes walk to the right",
+      "n_objects": 2,
+      "n_tracks": 713,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/4rzwFR-prqk_421087754.mp4",
+      "data_url": "clips/4rzwFR-prqk_421087754.npz"
+    },
+    {
+      "id": "Zpk1y3Il6Rk_21755088",
+      "description": "a silver train drives away from the camera",
+      "n_objects": 2,
+      "n_tracks": 272,
+      "quality": "good",
+      "split": "test",
+      "rgb_url": "videos/Zpk1y3Il6Rk_21755088.mp4",
+      "data_url": "clips/Zpk1y3Il6Rk_21755088.npz"
+    },
+    {
+      "id": "NNO6LQYf--U_295362029",
+      "description": "a group of people wearing green clothes walk to the left",
+      "n_objects": 3,
+      "n_tracks": 967,
+      "quality": "good",
+      "split": "test",
+      "rgb_url": "videos/NNO6LQYf--U_295362029.mp4",
+      "data_url": "clips/NNO6LQYf--U_295362029.npz"
+    },
+    {
+      "id": "5b_PrKFfxfo_135869203",
+      "description": "a marching band walks to the right",
+      "n_objects": 2,
+      "n_tracks": 1138,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/5b_PrKFfxfo_135869203.mp4",
+      "data_url": "clips/5b_PrKFfxfo_135869203.npz"
+    },
+    {
+      "id": "JMIcmLexxjA_302969636",
+      "description": "a red car drives to the left",
+      "n_objects": 3,
+      "n_tracks": 1287,
+      "quality": "good",
+      "split": "test",
+      "rgb_url": "videos/JMIcmLexxjA_302969636.mp4",
+      "data_url": "clips/JMIcmLexxjA_302969636.npz"
+    },
+    {
+      "id": "cDScCxHirwo_210944278",
+      "description": "a man walks away from the camera",
+      "n_objects": 2,
+      "n_tracks": 109,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/cDScCxHirwo_210944278.mp4",
+      "data_url": "clips/cDScCxHirwo_210944278.npz"
+    },
+    {
+      "id": "lcf3ZbeNKCE_559025692",
+      "description": "a person walks on a bridge",
+      "n_objects": 2,
+      "n_tracks": 44,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/lcf3ZbeNKCE_559025692.mp4",
+      "data_url": "clips/lcf3ZbeNKCE_559025692.npz"
+    },
+    {
+      "id": "pUWOGcxRL-k_603703704",
+      "description": "a person walks down a narrow street",
+      "n_objects": 3,
+      "n_tracks": 177,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/pUWOGcxRL-k_603703704.mp4",
+      "data_url": "clips/pUWOGcxRL-k_603703704.npz"
+    },
+    {
+      "id": "t67jtiLlCSE_31865199",
+      "description": "a person rides a snowmobile on a snowy mountain",
+      "n_objects": 3,
+      "n_tracks": 1989,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/t67jtiLlCSE_31865199.mp4",
+      "data_url": "clips/t67jtiLlCSE_31865199.npz"
+    },
+    {
+      "id": "vODqQ59cBQc_41775108",
+      "description": "a group of people walk to the left",
+      "n_objects": 2,
+      "n_tracks": 851,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/vODqQ59cBQc_41775108.mp4",
+      "data_url": "clips/vODqQ59cBQc_41775108.npz"
+    },
+    {
+      "id": "YZTWXtNyT9o_367033700",
+      "description": "a person walks away from the camera",
+      "n_objects": 3,
+      "n_tracks": 937,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/YZTWXtNyT9o_367033700.mp4",
+      "data_url": "clips/YZTWXtNyT9o_367033700.npz"
+    },
+    {
+      "id": "pDa9CAzMkSw_855155155",
+      "description": "a man walks to the left",
+      "n_objects": 1,
+      "n_tracks": 108,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/pDa9CAzMkSw_855155155.mp4",
+      "data_url": "clips/pDa9CAzMkSw_855155155.npz"
+    },
+    {
+      "id": "8OQSqypY6o8_602869536",
+      "description": "a person walks on a path",
+      "n_objects": 2,
+      "n_tracks": 20,
+      "quality": "good",
+      "split": "test",
+      "rgb_url": "videos/8OQSqypY6o8_602869536.mp4",
+      "data_url": "clips/8OQSqypY6o8_602869536.npz"
+    },
+    {
+      "id": "GRTYzq7noG0_15081748",
+      "description": "a white van drives to the left",
+      "n_objects": 2,
+      "n_tracks": 843,
+      "quality": "good",
+      "split": "test",
+      "rgb_url": "videos/GRTYzq7noG0_15081748.mp4",
+      "data_url": "clips/GRTYzq7noG0_15081748.npz"
+    },
+    {
+      "id": "E2JLcXcYZGY_168568569",
+      "description": "a person walks through a crowded street",
+      "n_objects": 3,
+      "n_tracks": 1306,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/E2JLcXcYZGY_168568569.mp4",
+      "data_url": "clips/E2JLcXcYZGY_168568569.npz"
+    },
+    {
+      "id": "Rb-Xkxvnq08_350283617",
+      "description": "a dark gray car drives away from the camera",
+      "n_objects": 3,
+      "n_tracks": 111,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/Rb-Xkxvnq08_350283617.mp4",
+      "data_url": "clips/Rb-Xkxvnq08_350283617.npz"
+    },
+    {
+      "id": "URGS4eqF8YU_215281949",
+      "description": "a bird flies to the left",
+      "n_objects": 2,
+      "n_tracks": 1730,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/URGS4eqF8YU_215281949.mp4",
+      "data_url": "clips/URGS4eqF8YU_215281949.npz"
+    },
+    {
+      "id": "ARdKPOyC-ME_28428428",
+      "description": "a white train drives to the left",
+      "n_objects": 2,
+      "n_tracks": 81,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/ARdKPOyC-ME_28428428.mp4",
+      "data_url": "clips/ARdKPOyC-ME_28428428.npz"
+    },
+    {
+      "id": "plZrgWSvNio_29996663",
+      "description": "a group of people walk along a dirt path",
+      "n_objects": 3,
+      "n_tracks": 14,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/plZrgWSvNio_29996663.mp4",
+      "data_url": "clips/plZrgWSvNio_29996663.npz"
+    },
+    {
+      "id": "F0CeYCqt50U_151080000",
+      "description": "a woman walks away from the camera",
+      "n_objects": 1,
+      "n_tracks": 78,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/F0CeYCqt50U_151080000.mp4",
+      "data_url": "clips/F0CeYCqt50U_151080000.npz"
+    },
+    {
+      "id": "StFCacb4euE_586386386",
+      "description": "a group of people ride an escalator",
+      "n_objects": 1,
+      "n_tracks": 21,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/StFCacb4euE_586386386.mp4",
+      "data_url": "clips/StFCacb4euE_586386386.npz"
+    },
+    {
+      "id": "HokQQ1U4PI0_15480000",
+      "description": "a black car drives to the right",
+      "n_objects": 2,
+      "n_tracks": 613,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/HokQQ1U4PI0_15480000.mp4",
+      "data_url": "clips/HokQQ1U4PI0_15480000.npz"
+    },
+    {
+      "id": "eyHgp_ZI8Cs_28428428",
+      "description": "a person rides a bicycle down a cobblestone path",
+      "n_objects": 3,
+      "n_tracks": 909,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/eyHgp_ZI8Cs_28428428.mp4",
+      "data_url": "clips/eyHgp_ZI8Cs_28428428.npz"
+    },
+    {
+      "id": "xyGpRps8AbA_15081748",
+      "description": "a black pig walks to the left",
+      "n_objects": 3,
+      "n_tracks": 308,
+      "quality": "good",
+      "split": "test",
+      "rgb_url": "videos/xyGpRps8AbA_15081748.mp4",
+      "data_url": "clips/xyGpRps8AbA_15081748.npz"
+    },
+    {
+      "id": "j1cjbRCwBFs_462195529",
+      "description": "fish swim in different directions",
+      "n_objects": 1,
+      "n_tracks": 16,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/j1cjbRCwBFs_462195529.mp4",
+      "data_url": "clips/j1cjbRCwBFs_462195529.npz"
+    },
+    {
+      "id": "7InViVd1iJc_48448448",
+      "description": "a man wearing a blue shirt walks to the left",
+      "n_objects": 3,
+      "n_tracks": 1920,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/7InViVd1iJc_48448448.mp4",
+      "data_url": "clips/7InViVd1iJc_48448448.npz"
+    },
+    {
+      "id": "uIioHD3J5uA_115181849",
+      "description": "a person rides a bike on a road",
+      "n_objects": 3,
+      "n_tracks": 41,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/uIioHD3J5uA_115181849.mp4",
+      "data_url": "clips/uIioHD3J5uA_115181849.npz"
+    },
+    {
+      "id": "8SnnhUiubNo_108508509",
+      "description": "a woman walks away from the camera",
+      "n_objects": 3,
+      "n_tracks": 1388,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/8SnnhUiubNo_108508509.mp4",
+      "data_url": "clips/8SnnhUiubNo_108508509.npz"
+    },
+    {
+      "id": "gL3DufrpOpA_48448448",
+      "description": "a group of children run and play on a paved path",
+      "n_objects": 3,
+      "n_tracks": 49,
+      "quality": "good",
+      "split": "test",
+      "rgb_url": "videos/gL3DufrpOpA_48448448.mp4",
+      "data_url": "clips/gL3DufrpOpA_48448448.npz"
+    },
+    {
+      "id": "hlW5M6otMSs_725992659",
+      "description": "a person rotates the bike and inspects it carefully",
+      "n_objects": 1,
+      "n_tracks": 23,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/hlW5M6otMSs_725992659.mp4",
+      "data_url": "clips/hlW5M6otMSs_725992659.npz"
+    },
+    {
+      "id": "-oLcmfK_hFY_68468468",
+      "description": "a crowd of people walk across the street",
+      "n_objects": 3,
+      "n_tracks": 466,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/-oLcmfK_hFY_68468468.mp4",
+      "data_url": "clips/-oLcmfK_hFY_68468468.npz"
+    },
+    {
+      "id": "sPD8TT3X5nI_413980647",
+      "description": "a woman walks to the left",
+      "n_objects": 3,
+      "n_tracks": 470,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/sPD8TT3X5nI_413980647.mp4",
+      "data_url": "clips/sPD8TT3X5nI_413980647.npz"
+    },
+    {
+      "id": "cxmuw8UAJ3w_168568569",
+      "description": "a man in a neon green shirt walks towards the camera",
+      "n_objects": 2,
+      "n_tracks": 983,
+      "quality": "good",
+      "split": "test",
+      "rgb_url": "videos/cxmuw8UAJ3w_168568569.mp4",
+      "data_url": "clips/cxmuw8UAJ3w_168568569.npz"
+    },
+    {
+      "id": "aCMPLClBK1M_876843510",
+      "description": "a white van drives to the left",
+      "n_objects": 2,
+      "n_tracks": 10,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/aCMPLClBK1M_876843510.mp4",
+      "data_url": "clips/aCMPLClBK1M_876843510.npz"
+    },
+    {
+      "id": "F0CeYCqt50U_143240000",
+      "description": "a woman walks to the right",
+      "n_objects": 1,
+      "n_tracks": 59,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/F0CeYCqt50U_143240000.mp4",
+      "data_url": "clips/F0CeYCqt50U_143240000.npz"
+    },
+    {
+      "id": "bpvZPHF858Y_21755088",
+      "description": "a red car drives to the right",
+      "n_objects": 3,
+      "n_tracks": 639,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/bpvZPHF858Y_21755088.mp4",
+      "data_url": "clips/bpvZPHF858Y_21755088.npz"
+    },
+    {
+      "id": "ZgNYSlZdBoQ_41775108",
+      "description": "a black car drives to the left",
+      "n_objects": 3,
+      "n_tracks": 917,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/ZgNYSlZdBoQ_41775108.mp4",
+      "data_url": "clips/ZgNYSlZdBoQ_41775108.npz"
+    },
+    {
+      "id": "4ty7owV1HPA_48448448",
+      "description": "a woman in a yellow dress walks to the right",
+      "n_objects": 3,
+      "n_tracks": 495,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/4ty7owV1HPA_48448448.mp4",
+      "data_url": "clips/4ty7owV1HPA_48448448.npz"
+    },
+    {
+      "id": "-S0kWuBlCWQ_175241909",
+      "description": "three women walk along a wet sidewalk beside a body of water",
+      "n_objects": 3,
+      "n_tracks": 1278,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/-S0kWuBlCWQ_175241909.mp4",
+      "data_url": "clips/-S0kWuBlCWQ_175241909.npz"
+    },
+    {
+      "id": "_Bmnlia8Eog_783083083",
+      "description": "a person rotates the bike and inspects it carefully",
+      "n_objects": 2,
+      "n_tracks": 1040,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/_Bmnlia8Eog_783083083.mp4",
+      "data_url": "clips/_Bmnlia8Eog_783083083.npz"
+    },
+    {
+      "id": "w4bYMjQH1s4_619152486",
+      "description": "a boat sails to the left along the river",
+      "n_objects": 3,
+      "n_tracks": 322,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/w4bYMjQH1s4_619152486.mp4",
+      "data_url": "clips/w4bYMjQH1s4_619152486.npz"
+    },
+    {
+      "id": "DEgw6rHm_js_112245579",
+      "description": "a black car drives forward on a road",
+      "n_objects": 2,
+      "n_tracks": 755,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/DEgw6rHm_js_112245579.mp4",
+      "data_url": "clips/DEgw6rHm_js_112245579.npz"
+    },
+    {
+      "id": "6Rat7vq4rk4_195261929",
+      "description": "a dark gray car drives to the left",
+      "n_objects": 3,
+      "n_tracks": 1713,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/6Rat7vq4rk4_195261929.mp4",
+      "data_url": "clips/6Rat7vq4rk4_195261929.npz"
+    },
+    {
+      "id": "0JBKLg6LXOM_88488488",
+      "description": "a man walks to the right and then stops",
+      "n_objects": 3,
+      "n_tracks": 550,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/0JBKLg6LXOM_88488488.mp4",
+      "data_url": "clips/0JBKLg6LXOM_88488488.npz"
+    },
+    {
+      "id": "rcVBZfskDPw_607941275",
+      "description": "a person walks along a path",
+      "n_objects": 2,
+      "n_tracks": 53,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/rcVBZfskDPw_607941275.mp4",
+      "data_url": "clips/rcVBZfskDPw_607941275.npz"
+    },
+    {
+      "id": "gyYzc-OEKo0_279946613",
+      "description": "a person walks on a gray road",
+      "n_objects": 3,
+      "n_tracks": 93,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/gyYzc-OEKo0_279946613.mp4",
+      "data_url": "clips/gyYzc-OEKo0_279946613.npz"
+    },
+    {
+      "id": "5H9F5g7wIrY_625558892",
+      "description": "a person walks down the street",
+      "n_objects": 2,
+      "n_tracks": 1385,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/5H9F5g7wIrY_625558892.mp4",
+      "data_url": "clips/5H9F5g7wIrY_625558892.npz"
+    },
+    {
+      "id": "IPCh4RzV6tY_536870204",
+      "description": "a police car drives to the right",
+      "n_objects": 2,
+      "n_tracks": 1142,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/IPCh4RzV6tY_536870204.mp4",
+      "data_url": "clips/IPCh4RzV6tY_536870204.npz"
+    },
+    {
+      "id": "Oc9d19D6cuw_333767100",
+      "description": "a dark gray car drives through a roundabout",
+      "n_objects": 3,
+      "n_tracks": 27,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/Oc9d19D6cuw_333767100.mp4",
+      "data_url": "clips/Oc9d19D6cuw_333767100.npz"
+    },
+    {
+      "id": "hlW5M6otMSs_275375375",
+      "description": "a yellow car drives to the right",
+      "n_objects": 3,
+      "n_tracks": 1030,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/hlW5M6otMSs_275375375.mp4",
+      "data_url": "clips/hlW5M6otMSs_275375375.npz"
+    },
+    {
+      "id": "9F_CaOaT9Xg_642409076",
+      "description": "a black car drives to the right",
+      "n_objects": 3,
+      "n_tracks": 796,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/9F_CaOaT9Xg_642409076.mp4",
+      "data_url": "clips/9F_CaOaT9Xg_642409076.npz"
+    },
+    {
+      "id": "LWheosMBIwU_790357024",
+      "description": "a black car drives to the left",
+      "n_objects": 2,
+      "n_tracks": 1016,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/LWheosMBIwU_790357024.mp4",
+      "data_url": "clips/LWheosMBIwU_790357024.npz"
+    },
+    {
+      "id": "nRuc2kjPg_M_382115449",
+      "description": "a man wearing a blue shirt walks to the right",
+      "n_objects": 2,
+      "n_tracks": 1052,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/nRuc2kjPg_M_382115449.mp4",
+      "data_url": "clips/nRuc2kjPg_M_382115449.npz"
+    },
+    {
+      "id": "o1v852KqCI8_903069736",
+      "description": "a man speaks to the camera",
+      "n_objects": 3,
+      "n_tracks": 222,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/o1v852KqCI8_903069736.mp4",
+      "data_url": "clips/o1v852KqCI8_903069736.npz"
+    },
+    {
+      "id": "Q7E08pugxZc_141875209",
+      "description": "a person walks to the left",
+      "n_objects": 2,
+      "n_tracks": 648,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/Q7E08pugxZc_141875209.mp4",
+      "data_url": "clips/Q7E08pugxZc_141875209.npz"
+    },
+    {
+      "id": "rblC8Pcj-Qo_41775108",
+      "description": "a man walks to the right",
+      "n_objects": 2,
+      "n_tracks": 1510,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/rblC8Pcj-Qo_41775108.mp4",
+      "data_url": "clips/rblC8Pcj-Qo_41775108.npz"
+    },
+    {
+      "id": "wGJN7iR7CRo_136202870",
+      "description": "a dark gray car drives through a roundabout",
+      "n_objects": 3,
+      "n_tracks": 1033,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/wGJN7iR7CRo_136202870.mp4",
+      "data_url": "clips/wGJN7iR7CRo_136202870.npz"
+    },
+    {
+      "id": "E2JLcXcYZGY_35101768",
+      "description": "a group of people walk in different directions",
+      "n_objects": 2,
+      "n_tracks": 695,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/E2JLcXcYZGY_35101768.mp4",
+      "data_url": "clips/E2JLcXcYZGY_35101768.npz"
+    },
+    {
+      "id": "sPD8TT3X5nI_128528529",
+      "description": "a group of people walk on a bridge",
+      "n_objects": 3,
+      "n_tracks": 594,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/sPD8TT3X5nI_128528529.mp4",
+      "data_url": "clips/sPD8TT3X5nI_128528529.npz"
+    },
+    {
+      "id": "LnrNLffl6w4_275342009",
+      "description": "a man walks away from the camera",
+      "n_objects": 2,
+      "n_tracks": 41,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/LnrNLffl6w4_275342009.mp4",
+      "data_url": "clips/LnrNLffl6w4_275342009.npz"
+    },
+    {
+      "id": "iU5VyhEQ39o_31064398",
+      "description": "a train travels on a track",
+      "n_objects": 2,
+      "n_tracks": 33,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/iU5VyhEQ39o_31064398.mp4",
+      "data_url": "clips/iU5VyhEQ39o_31064398.npz"
+    },
+    {
+      "id": "uLbNyzbHnZs_231731732",
+      "description": "two women walk to the left",
+      "n_objects": 3,
+      "n_tracks": 1579,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/uLbNyzbHnZs_231731732.mp4",
+      "data_url": "clips/uLbNyzbHnZs_231731732.npz"
+    },
+    {
+      "id": "JREOLefcmOM_38405072",
+      "description": "a red car drives to the right",
+      "n_objects": 2,
+      "n_tracks": 814,
+      "quality": "good",
+      "split": "test",
+      "rgb_url": "videos/JREOLefcmOM_38405072.mp4",
+      "data_url": "clips/JREOLefcmOM_38405072.npz"
+    },
+    {
+      "id": "Gm92uo_a6XI_88488488",
+      "description": "a person walks along a pier",
+      "n_objects": 2,
+      "n_tracks": 35,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/Gm92uo_a6XI_88488488.mp4",
+      "data_url": "clips/Gm92uo_a6XI_88488488.npz"
+    },
+    {
+      "id": "3M4ZLUc8HVU_35101768",
+      "description": "a woman in a white shirt and black pants walks to the right",
+      "n_objects": 2,
+      "n_tracks": 549,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/3M4ZLUc8HVU_35101768.mp4",
+      "data_url": "clips/3M4ZLUc8HVU_35101768.npz"
+    },
+    {
+      "id": "d5IQUmnhIyU_192959626",
+      "description": "a woman in a green shirt walks to the left",
+      "n_objects": 2,
+      "n_tracks": 940,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/d5IQUmnhIyU_192959626.mp4",
+      "data_url": "clips/d5IQUmnhIyU_192959626.npz"
+    },
+    {
+      "id": "VPVTjnXx0dI_270270270",
+      "description": "a white balloon rises and then falls",
+      "n_objects": 1,
+      "n_tracks": 16,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/VPVTjnXx0dI_270270270.mp4",
+      "data_url": "clips/VPVTjnXx0dI_270270270.npz"
+    },
+    {
+      "id": "QGuKlK0lu88_394294294",
+      "description": "two people walk on a path",
+      "n_objects": 2,
+      "n_tracks": 13,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/QGuKlK0lu88_394294294.mp4",
+      "data_url": "clips/QGuKlK0lu88_394294294.npz"
+    },
+    {
+      "id": "6BtYpOk2oOc_101835169",
+      "description": "a person walks to the left",
+      "n_objects": 3,
+      "n_tracks": 214,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/6BtYpOk2oOc_101835169.mp4",
+      "data_url": "clips/6BtYpOk2oOc_101835169.npz"
+    },
+    {
+      "id": "8q7Hpwy9q1I_81815148",
+      "description": "a boat sails to the left along the river",
+      "n_objects": 3,
+      "n_tracks": 41,
+      "quality": "good",
+      "split": "test",
+      "rgb_url": "videos/8q7Hpwy9q1I_81815148.mp4",
+      "data_url": "clips/8q7Hpwy9q1I_81815148.npz"
+    },
+    {
+      "id": "_T_OfpB194U_408174842",
+      "description": "a person walks towards the camera",
+      "n_objects": 2,
+      "n_tracks": 667,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/_T_OfpB194U_408174842.mp4",
+      "data_url": "clips/_T_OfpB194U_408174842.npz"
+    },
+    {
+      "id": "PepbrOcZZso_251951952",
+      "description": "a person walks along a path",
+      "n_objects": 3,
+      "n_tracks": 64,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/PepbrOcZZso_251951952.mp4",
+      "data_url": "clips/PepbrOcZZso_251951952.npz"
+    },
+    {
+      "id": "SoRcKPx5yR0_135201869",
+      "description": "a black car drives from right to left",
+      "n_objects": 2,
+      "n_tracks": 862,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/SoRcKPx5yR0_135201869.mp4",
+      "data_url": "clips/SoRcKPx5yR0_135201869.npz"
+    },
+    {
+      "id": "-RQmczpFM5I_583983984",
+      "description": "a man walks to the right",
+      "n_objects": 2,
+      "n_tracks": 850,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/-RQmczpFM5I_583983984.mp4",
+      "data_url": "clips/-RQmczpFM5I_583983984.npz"
+    },
+    {
+      "id": "MiTC6zJisQc_963096430",
+      "description": "a person walks to the right",
+      "n_objects": 1,
+      "n_tracks": 15,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/MiTC6zJisQc_963096430.mp4",
+      "data_url": "clips/MiTC6zJisQc_963096430.npz"
+    },
+    {
+      "id": "O6YU6u5_ACg_35101768",
+      "description": "two women walk past a blue car",
+      "n_objects": 3,
+      "n_tracks": 1888,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/O6YU6u5_ACg_35101768.mp4",
+      "data_url": "clips/O6YU6u5_ACg_35101768.npz"
+    },
+    {
+      "id": "zWi0Ur-KdiA_586653320",
+      "description": "a man in a white t-shirt and blue jeans runs to the right",
+      "n_objects": 2,
+      "n_tracks": 73,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/zWi0Ur-KdiA_586653320.mp4",
+      "data_url": "clips/zWi0Ur-KdiA_586653320.npz"
+    },
+    {
+      "id": "O1lraa7pP3Y_337504171",
+      "description": "a woman in a blue dress walks to the right",
+      "n_objects": 2,
+      "n_tracks": 1228,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/O1lraa7pP3Y_337504171.mp4",
+      "data_url": "clips/O1lraa7pP3Y_337504171.npz"
+    },
+    {
+      "id": "pB4GRfAKtbs_228628629",
+      "description": "waves crash onto the rocks",
+      "n_objects": 3,
+      "n_tracks": 132,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/pB4GRfAKtbs_228628629.mp4",
+      "data_url": "clips/pB4GRfAKtbs_228628629.npz"
+    },
+    {
+      "id": "rlT_oK0SOVo_462195529",
+      "description": "a person rides a jet ski on the lake",
+      "n_objects": 3,
+      "n_tracks": 90,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/rlT_oK0SOVo_462195529.mp4",
+      "data_url": "clips/rlT_oK0SOVo_462195529.npz"
+    },
+    {
+      "id": "ZXJsNlLOdwY_116349683",
+      "description": "a person walks to the right",
+      "n_objects": 2,
+      "n_tracks": 282,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/ZXJsNlLOdwY_116349683.mp4",
+      "data_url": "clips/ZXJsNlLOdwY_116349683.npz"
+    },
+    {
+      "id": "_SiBTwym8Qw_101835169",
+      "description": "a white car drives to the right",
+      "n_objects": 2,
+      "n_tracks": 1719,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/_SiBTwym8Qw_101835169.mp4",
+      "data_url": "clips/_SiBTwym8Qw_101835169.npz"
+    },
+    {
+      "id": "doEVhmc0VWI_15081748",
+      "description": "a person walks to the right",
+      "n_objects": 2,
+      "n_tracks": 77,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/doEVhmc0VWI_15081748.mp4",
+      "data_url": "clips/doEVhmc0VWI_15081748.npz"
+    },
+    {
+      "id": "rof9eMyTyiU_68468468",
+      "description": "a train travels to the right along the tracks",
+      "n_objects": 2,
+      "n_tracks": 491,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/rof9eMyTyiU_68468468.mp4",
+      "data_url": "clips/rof9eMyTyiU_68468468.npz"
+    },
+    {
+      "id": "0himhUCBDXo_155055055",
+      "description": "a woman in a red shirt walks to the left",
+      "n_objects": 2,
+      "n_tracks": 117,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/0himhUCBDXo_155055055.mp4",
+      "data_url": "clips/0himhUCBDXo_155055055.npz"
+    },
+    {
+      "id": "8z501XLjXUI_268668669",
+      "description": "a group of people walk across the street",
+      "n_objects": 3,
+      "n_tracks": 508,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/8z501XLjXUI_268668669.mp4",
+      "data_url": "clips/8z501XLjXUI_268668669.npz"
+    },
+    {
+      "id": "i-cAf9xzCiw_275342009",
+      "description": "a group of people in costumes walk to the left",
+      "n_objects": 3,
+      "n_tracks": 275,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/i-cAf9xzCiw_275342009.mp4",
+      "data_url": "clips/i-cAf9xzCiw_275342009.npz"
+    },
+    {
+      "id": "Y2LysD6EdLg_469002336",
+      "description": "a silver car drives to the left",
+      "n_objects": 2,
+      "n_tracks": 733,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/Y2LysD6EdLg_469002336.mp4",
+      "data_url": "clips/Y2LysD6EdLg_469002336.npz"
+    },
+    {
+      "id": "7YAIbIXy67Y_144044044",
+      "description": "tourists walk through a stone archway",
+      "n_objects": 3,
+      "n_tracks": 1692,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/7YAIbIXy67Y_144044044.mp4",
+      "data_url": "clips/7YAIbIXy67Y_144044044.npz"
+    },
+    {
+      "id": "Xu99k0Ehcuk_291891892",
+      "description": "a person walks to the right",
+      "n_objects": 3,
+      "n_tracks": 275,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/Xu99k0Ehcuk_291891892.mp4",
+      "data_url": "clips/Xu99k0Ehcuk_291891892.npz"
+    },
+    {
+      "id": "G9T6wcN6cD8_138505172",
+      "description": "a light blue car drives to the left",
+      "n_objects": 2,
+      "n_tracks": 1797,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/G9T6wcN6cD8_138505172.mp4",
+      "data_url": "clips/G9T6wcN6cD8_138505172.npz"
+    },
+    {
+      "id": "-V1TK-oVUZI_603970637",
+      "description": "a woman runs to the right",
+      "n_objects": 2,
+      "n_tracks": 74,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/-V1TK-oVUZI_603970637.mp4",
+      "data_url": "clips/-V1TK-oVUZI_603970637.npz"
+    },
+    {
+      "id": "OJQZi4i3yww_112012012",
+      "description": "a black man walks to the left",
+      "n_objects": 2,
+      "n_tracks": 556,
+      "quality": "good",
+      "split": "train",
+      "rgb_url": "videos/OJQZi4i3yww_112012012.mp4",
+      "data_url": "clips/OJQZi4i3yww_112012012.npz"
+    }
+  ]
+}

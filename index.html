@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stereo4D Visualization</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 16px; scroll-behavior: smooth; }
+
+:root {
+  --bg: #111; --bg-card: #161616; --bg-header: #1a1a1a; --bg-body: #0d0d0d;
+  --border: #222; --border-hover: #444;
+  --text: #d4d4d4; --text-heading: #f0f0f0; --text-secondary: #777; --text-muted: #555;
+  --scrollbar-track: #1a1a1a; --scrollbar-thumb: #333;
+}
+[data-theme="light"] {
+  --bg: #f5f5f0; --bg-card: #ffffff; --bg-header: #f0efe8; --bg-body: #eeeee8;
+  --border: #ddd; --border-hover: #bbb;
+  --text: #333; --text-heading: #111; --text-secondary: #666; --text-muted: #999;
+  --scrollbar-track: #e8e8e8; --scrollbar-thumb: #ccc;
+}
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg); color: var(--text);
+  line-height: 1.6; -webkit-font-smoothing: antialiased;
+  transition: background 0.25s, color 0.25s;
+}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
+
+.page { max-width: 1300px; margin: 0 auto; padding: 0 24px; }
+
+.theme-toggle {
+  background: var(--bg-card); border: 1px solid var(--border);
+  color: var(--text-secondary); border-radius: 20px;
+  padding: 6px 14px; font-size: 0.72rem; font-family: inherit; cursor: pointer;
+}
+.theme-toggle:hover { border-color: var(--border-hover); color: var(--text); }
+
+.masthead {
+  padding: 40px 0 20px; border-bottom: 1px solid var(--border);
+  margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: space-between;
+}
+.masthead-left { flex: 1; }
+.masthead h1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 2.4rem; font-weight: 700; color: var(--text-heading); letter-spacing: -0.02em;
+}
+.masthead .subtitle { font-size: 0.95rem; color: var(--text-secondary); margin-top: 6px; font-weight: 300; }
+
+/* Selector bar */
+.selector-bar {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px; margin-bottom: 24px;
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
+  flex-wrap: wrap;
+}
+.selector-bar button {
+  background: none; border: 1px solid var(--border); color: var(--text);
+  padding: 6px 14px; border-radius: 6px; cursor: pointer;
+  font-family: inherit; font-size: 0.78rem;
+}
+.selector-bar button:hover:not(:disabled) { background: var(--bg-header); border-color: var(--border-hover); }
+.selector-bar button:disabled { opacity: 0.35; cursor: not-allowed; }
+.selector-bar select {
+  background: var(--bg-body); border: 1px solid var(--border); color: var(--text);
+  padding: 6px 10px; border-radius: 6px; font-family: 'SF Mono', monospace; font-size: 0.78rem;
+  flex: 1; min-width: 220px; cursor: pointer;
+}
+.selector-bar .counter {
+  font-size: 0.72rem; color: var(--text-muted); font-variant-numeric: tabular-nums;
+}
+.selector-bar .rand-btn { margin-left: auto; }
+
+/* Clip block */
+.clip-block { margin-bottom: 40px; }
+.clip-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.25rem; color: var(--text-heading); font-weight: 400;
+  margin-bottom: 4px; line-height: 1.4;
+}
+.clip-meta {
+  font-size: 0.7rem; color: var(--text-muted); margin-bottom: 12px;
+  font-family: 'SF Mono', monospace;
+}
+.clip-meta a { color: var(--text-secondary); text-decoration: none; border-bottom: 1px dotted var(--text-muted); }
+.clip-meta a:hover { color: var(--text); }
+
+.viz-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.viz-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; border-bottom: 1px solid var(--border); background: var(--bg-header);
+}
+.card-title { font-size: 0.65rem; font-weight: 600; color: var(--text-secondary); letter-spacing: 0.1em; text-transform: uppercase; }
+.card-hint { font-size: 0.6rem; color: var(--text-muted); }
+.viz-body {
+  position: relative; aspect-ratio: 1 / 1; background: var(--bg-body);
+  display: flex; align-items: center; justify-content: center;
+}
+.viz-body video { width: 100%; height: 100%; object-fit: contain; }
+.viz-body .canvas2d { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+.viz-body canvas { width: 100%; height: 100%; }
+
+.playback-bar {
+  display: flex; align-items: center; gap: 8px; padding: 8px 14px;
+  background: var(--bg-header); border-top: 1px solid var(--border);
+}
+.playback-bar button {
+  background: none; border: 1px solid var(--border); color: var(--text);
+  width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 10px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.playback-bar input[type=range] {
+  flex: 1; -webkit-appearance: none; appearance: none;
+  height: 3px; background: #333; border-radius: 2px; outline: none;
+}
+.playback-bar input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 10px; height: 10px;
+  border-radius: 50%; background: #ccc; cursor: pointer;
+}
+.frame-label {
+  font-size: 0.65rem; color: var(--text-muted); min-width: 45px;
+  text-align: right; font-variant-numeric: tabular-nums; flex-shrink: 0;
+}
+.loading-placeholder { display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.8rem; }
+.empty-state {
+  padding: 60px 24px; text-align: center; color: var(--text-muted);
+  background: var(--bg-card); border: 1px dashed var(--border); border-radius: 8px;
+}
+
+.footer {
+  padding: 24px 0; border-top: 1px solid var(--border);
+  text-align: center; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 24px;
+}
+@media (max-width: 800px) { .viz-row { grid-template-columns: 1fr; } .masthead h1 { font-size: 1.6rem; } }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="masthead">
+    <div class="masthead-left">
+      <h1>Stereo4D Visualization</h1>
+      <p class="subtitle">Left-rectified perspective video + 3D track trajectories. Static tracks removed via per-clip motion filter; 150 moving tracks shown in distinct per-track colours.</p>
+    </div>
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">Light Mode</button>
+  </header>
+
+  <div class="selector-bar">
+    <button id="prevBtn" onclick="goDelta(-1)">&larr; Prev</button>
+    <select id="clipSelect" onchange="goClip(this.value)"></select>
+    <button id="nextBtn" onclick="goDelta(1)">Next &rarr;</button>
+    <span class="counter" id="counter">–/–</span>
+    <button class="rand-btn" onclick="goRandom()">Random</button>
+  </div>
+
+  <div id="clipContainer"></div>
+
+  <footer class="footer">Stereo4D &middot; Jin et al. CVPR 2025</footer>
+</div>
+
+<script>
+// ============================================================
+// State — one clip at a time
+// ============================================================
+let manifest = null;
+let currentIndex = -1;
+let viewer = null;          // current viewer state, freed on nav
+const TRAIL_2D = 40, TRAIL_3D = 40, CAM_TRAIL = 30, SPLINE_SUBDIV = 4;
+
+// ============================================================
+// HSL rainbow palette — golden-ratio hue walk
+// ============================================================
+function paletteHex(N) { const r=[]; for (let i=0;i<N;i++) r.push(`hsl(${((i*137.508)%360).toFixed(1)}, 72%, 62%)`); return r; }
+function paletteRGB(N) { const r=[]; for (let i=0;i<N;i++) r.push(hslToRgb(((i*137.508)%360)/360, 0.72, 0.62)); return r; }
+// Per-track colors derived from object_ids when present (tracks in same cluster share color),
+// otherwise unique-per-track (each golden-ratio hue step).
+function trackColorsHex(N, objectIds) {
+  if (objectIds && objectIds.length === N) {
+    const nObj = 1 + objectIds.reduce((a,b)=>Math.max(a,b),0);
+    const pal = paletteHex(nObj);
+    return objectIds.map(oid => pal[oid]);
+  }
+  return paletteHex(N);
+}
+function trackColorsRGB(N, objectIds) {
+  if (objectIds && objectIds.length === N) {
+    const nObj = 1 + objectIds.reduce((a,b)=>Math.max(a,b),0);
+    const pal = paletteRGB(nObj);
+    return objectIds.map(oid => pal[oid]);
+  }
+  return paletteRGB(N);
+}
+function hslToRgb(h, s, l) {
+  if (s === 0) return {r: l, g: l, b: l};
+  const hue2rgb = (p, q, t) => { if (t<0)t+=1; if (t>1)t-=1; if (t<1/6) return p+(q-p)*6*t; if (t<1/2) return q; if (t<2/3) return p+(q-p)*(2/3-t)*6; return p; };
+  const q = l<0.5 ? l*(1+s) : l+s-l*s; const p = 2*l-q;
+  return {r: hue2rgb(p,q,h+1/3), g: hue2rgb(p,q,h), b: hue2rgb(p,q,h-1/3)};
+}
+
+// ============================================================
+// Catmull-Rom spline
+// ============================================================
+function catmullRom(p0, p1, p2, p3, t) {
+  const t2 = t*t, t3 = t2*t;
+  return 0.5 * ((2*p1) + (-p0+p2)*t + (2*p0-5*p1+4*p2-p3)*t2 + (-p0+3*p1-3*p2+p3)*t3);
+}
+function interpolateSpline2D(points, sd) {
+  if (points.length < 2) return points;
+  const r = [];
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[Math.max(0, i-1)], p1 = points[i], p2 = points[i+1], p3 = points[Math.min(points.length-1, i+2)];
+    for (let s = 0; s < sd; s++) { const t = s/sd; r.push([catmullRom(p0[0],p1[0],p2[0],p3[0],t), catmullRom(p0[1],p1[1],p2[1],p3[1],t)]); }
+  }
+  r.push(points[points.length-1]); return r;
+}
+function interpolateSpline3D(points, sd) {
+  if (points.length < 2) {
+    const a = new Float32Array(points.length*3);
+    for (let i = 0; i < points.length; i++) { a[i*3]=points[i][0]; a[i*3+1]=points[i][1]; a[i*3+2]=points[i][2]; }
+    return a;
+  }
+  const r = [];
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[Math.max(0, i-1)], p1 = points[i], p2 = points[i+1], p3 = points[Math.min(points.length-1, i+2)];
+    for (let s = 0; s < sd; s++) {
+      const t = s/sd;
+      r.push(catmullRom(p0[0],p1[0],p2[0],p3[0],t), catmullRom(p0[1],p1[1],p2[1],p3[1],t), catmullRom(p0[2],p1[2],p2[2],p3[2],t));
+    }
+  }
+  const last = points[points.length-1]; r.push(last[0], last[1], last[2]);
+  return new Float32Array(r);
+}
+
+// ============================================================
+// Theme
+// ============================================================
+function toggleTheme() {
+  const html = document.documentElement;
+  const isLight = html.getAttribute('data-theme') === 'light';
+  html.setAttribute('data-theme', isLight ? 'dark' : 'light');
+  document.getElementById('themeToggle').textContent = isLight ? 'Light Mode' : 'Dark Mode';
+  localStorage.setItem('theme', isLight ? 'dark' : 'light');
+  if (viewer && viewer.renderer) { viewer.renderer.setClearColor(isLight ? 0xeeeee8 : 0x0d0d0d); renderViewer(); }
+}
+(function() { if (localStorage.getItem('theme') === 'light') document.documentElement.setAttribute('data-theme', 'light'); })();
+
+// ============================================================
+// NPZ loader (static-site equivalent of the old Flask /api/clip endpoint).
+//   - fetches a .npz (zip of .npy files)
+//   - JSZip unzips; each .npy header is parsed locally (40 lines, no deps)
+//   - returns a nested-array object matching the JSON the Flask server used to emit:
+//       pts3d : (K, T, 3), tracks2d: (T, K, 2), vis3d: (K, T), vis2d: (T, K),
+//       cam_pos/cam_fwd : (T, 3), object_ids: (K,), n_objects: int, dim: (2,), ...
+// ============================================================
+function f16ToF32(h) {
+  const s = (h & 0x8000) >> 15;
+  const e = (h & 0x7c00) >> 10;
+  const f = h & 0x03ff;
+  if (e === 0) return (s ? -1 : 1) * Math.pow(2, -14) * (f / 1024);
+  if (e === 0x1f) return f ? NaN : (s ? -Infinity : Infinity);
+  return (s ? -1 : 1) * Math.pow(2, e - 15) * (1 + f / 1024);
+}
+function parseNpy(ab) {
+  const dv = new DataView(ab);
+  const major = dv.getUint8(6);
+  let headerLen, dataStart;
+  if (major === 1) { headerLen = dv.getUint16(8, true); dataStart = 10 + headerLen; }
+  else             { headerLen = dv.getUint32(8, true); dataStart = 12 + headerLen; }
+  const headerStart = major === 1 ? 10 : 12;
+  const hdr = new TextDecoder().decode(new Uint8Array(ab, headerStart, headerLen));
+  const dtype = hdr.match(/'descr':\s*'([^']+)'/)[1];
+  const shapeStr = hdr.match(/'shape':\s*\(([^)]*)\)/)[1].trim().replace(/,\s*$/, '');
+  const shape = shapeStr ? shapeStr.split(',').map(s => +s.trim()) : [];
+  const body = ab.slice(dataStart);
+  let data;
+  if      (dtype === '<f2') { const u16 = new Uint16Array(body); data = new Float32Array(u16.length);
+                               for (let i = 0; i < u16.length; i++) data[i] = f16ToF32(u16[i]); }
+  else if (dtype === '<f4') data = new Float32Array(body);
+  else if (dtype === '<f8') data = new Float64Array(body);
+  else if (dtype === '|b1') data = new Uint8Array(body);
+  else if (dtype === '<i4' || dtype === '<i8' || dtype === '<i2' || dtype === '<i1') data = new Int32Array(body);
+  else throw new Error('unsupported dtype: ' + dtype);
+  return { data, shape };
+}
+function nestedFromFlat(flat, shape) {
+  if (shape.length === 0) return flat[0];
+  if (shape.length === 1) return Array.from(flat);
+  const [first, ...rest] = shape;
+  const stride = rest.reduce((a, b) => a * b, 1);
+  const out = new Array(first);
+  for (let i = 0; i < first; i++) out[i] = nestedFromFlat(flat.subarray(i * stride, (i + 1) * stride), rest);
+  return out;
+}
+async function loadNpz(url) {
+  const buf = await (await fetch(url)).arrayBuffer();
+  const zip = await JSZip.loadAsync(buf);
+  const out = {};
+  for (const name of Object.keys(zip.files)) {
+    if (!name.endsWith('.npy')) continue;
+    const ab = await zip.file(name).async('arraybuffer');
+    const { data, shape } = parseNpy(ab);
+    out[name.replace(/\.npy$/, '')] = nestedFromFlat(data, shape);
+  }
+  return out;
+}
+
+// ============================================================
+// Router — clip id lives in URL hash
+// ============================================================
+async function init() {
+  const resp = await fetch('manifest.json');
+  manifest = await resp.json();
+  if (document.documentElement.getAttribute('data-theme') === 'light')
+    document.getElementById('themeToggle').textContent = 'Dark Mode';
+
+  // Populate dropdown
+  const sel = document.getElementById('clipSelect');
+  sel.innerHTML = '';
+  for (let i = 0; i < manifest.clips.length; i++) {
+    const opt = document.createElement('option');
+    opt.value = manifest.clips[i].id;
+    opt.textContent = `${i+1}. ${manifest.clips[i].id}`;
+    sel.appendChild(opt);
+  }
+
+  // Route from hash (or show empty state)
+  window.addEventListener('hashchange', loadFromHash);
+  loadFromHash();
+}
+
+function loadFromHash() {
+  const hash = window.location.hash.replace(/^#/, '');
+  if (!hash) {
+    currentIndex = -1;
+    renderEmptyState();
+    updateControls();
+    return;
+  }
+  const idx = manifest.clips.findIndex(c => c.id === hash);
+  if (idx < 0) { renderEmptyState(`Unknown clip: ${hash}`); updateControls(); return; }
+  if (idx === currentIndex) { updateControls(); return; }
+  currentIndex = idx;
+  document.getElementById('clipSelect').value = manifest.clips[idx].id;
+  teardownViewer();
+  renderClip(manifest.clips[idx]);
+  updateControls();
+}
+
+function renderEmptyState(msg) {
+  const container = document.getElementById('clipContainer');
+  container.innerHTML = `<div class="empty-state">${msg || 'Pick a clip to load.'} &middot; ${manifest && manifest.clips.length ? manifest.clips.length + ' available' : ''}</div>`;
+}
+
+function updateControls() {
+  const n = manifest ? manifest.clips.length : 0;
+  document.getElementById('counter').textContent = currentIndex >= 0 ? `${currentIndex+1}/${n}` : `–/${n}`;
+  document.getElementById('prevBtn').disabled = currentIndex <= 0;
+  document.getElementById('nextBtn').disabled = currentIndex < 0 || currentIndex >= n - 1;
+}
+
+function goClip(id) { window.location.hash = '#' + id; }
+function goDelta(d) {
+  if (!manifest) return;
+  const n = manifest.clips.length;
+  let i = currentIndex + d;
+  if (i < 0) i = 0; if (i >= n) i = n - 1;
+  window.location.hash = '#' + manifest.clips[i].id;
+}
+function goRandom() {
+  if (!manifest || !manifest.clips.length) return;
+  const i = Math.floor(Math.random() * manifest.clips.length);
+  window.location.hash = '#' + manifest.clips[i].id;
+}
+
+// ============================================================
+// Render a clip (only one at a time)
+// ============================================================
+function teardownViewer() {
+  if (!viewer) return;
+  if (viewer._rafId) cancelAnimationFrame(viewer._rafId);
+  if (viewer.video) { viewer.video.pause(); viewer.video.removeAttribute('src'); viewer.video.load(); }
+  if (viewer.renderer) viewer.renderer.dispose();
+  viewer = null;
+  activeViewer = null;
+}
+
+function renderClip(c) {
+  const container = document.getElementById('clipContainer');
+  const ytId = c.id.split('_')[0];
+  const ts = c.id.split('_').slice(1).join('_');
+  container.innerHTML = `
+    <div class="clip-block">
+      <div class="clip-title">
+        ${c.quality === 'good' ? '<span style="color:#4ade80;font-weight:600;margin-right:10px">● GOOD</span>'
+         : c.quality === 'bad' ? '<span style="color:#f87171;font-weight:600;margin-right:10px">● BAD</span>'
+         : ''}
+        ${c.description ? '&ldquo;' + c.description + '&rdquo;' : c.id}
+      </div>
+      <div class="clip-meta">
+        ${c.id} &middot;
+        <a href="https://youtu.be/${ytId}" target="_blank" rel="noopener">youtu.be/${ytId}</a>
+        &middot; first-frame ts=${ts}
+        ${c.n_objects != null ? ' &middot; ' + c.n_objects + ' object clusters' : ''}
+        ${c.n_tracks != null ? ' &middot; ' + c.n_tracks + ' tracks' : ''}
+        ${c.split ? ' &middot; ' + c.split : ''}
+      </div>
+      <div class="viz-row">
+        <div class="viz-card">
+          <div class="card-header"><span class="card-title">Left-rectified RGB + 2D tracks</span></div>
+          <div class="viz-body" id="rgb_box">
+            <video id="video" muted loop playsinline></video>
+            <canvas class="canvas2d" id="c2d"></canvas>
+          </div>
+          <div class="playback-bar">
+            <button id="pp" onclick="togglePlay()">&#9654;</button>
+            <input type="range" id="scrub" min="0" max="100" value="0" step="0.1" oninput="scrubTo(this.value)">
+            <span class="frame-label" id="fl">0/0</span>
+          </div>
+        </div>
+        <div class="viz-card">
+          <div class="card-header">
+            <span class="card-title">3D Track Trajectories</span>
+            <span class="card-hint">drag rotate &middot; scroll zoom &middot; wasdqe</span>
+          </div>
+          <div class="viz-body" id="box3d">
+            <div class="loading-placeholder" id="loading">Loading...</div>
+            <canvas id="canvas3d" style="display:none"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  initClipViewer(c);
+}
+
+async function initClipViewer(c) {
+  viewer = { clip: c };
+  viewer.video = document.getElementById('video');
+  viewer.canvas2d = document.getElementById('c2d');
+  viewer.ctx2d = viewer.canvas2d.getContext('2d');
+  viewer.video.src = c.rgb_url;
+  viewer.video.load();
+  viewer.video.play();
+  document.getElementById('pp').innerHTML = '&#9646;&#9646;';
+
+  function rafLoop() {
+    if (!viewer) return;                                 // torn down
+    viewer._rafId = requestAnimationFrame(rafLoop);
+    if (!viewer.video || viewer.video.paused || !viewer.video.duration || !viewer.clipData) return;
+    const T = viewer.clipData.pts3d[0].length;
+    if (T === 0) return;
+    const progress = viewer.video.currentTime / viewer.video.duration;
+    const fracFrame = progress * Math.max(T - 1, 0);
+    const fi = Math.round(fracFrame);
+    document.getElementById('scrub').value = progress * 100;
+    document.getElementById('fl').textContent = fi + '/' + T;
+    draw2DFrame(fracFrame);
+    draw3DFrame(fracFrame);
+  }
+  rafLoop();
+  viewer.video.addEventListener('timeupdate', () => {
+    if (!viewer || !viewer.video || !viewer.video.duration || !viewer.clipData) return;
+    if (viewer.video.paused) {
+      const T = viewer.clipData.pts3d[0].length;
+      const progress = viewer.video.currentTime / viewer.video.duration;
+      const fracFrame = progress * Math.max(T - 1, 0);
+      const fi = Math.round(fracFrame);
+      document.getElementById('scrub').value = progress * 100;
+      document.getElementById('fl').textContent = fi + '/' + T;
+      draw2DFrame(fracFrame);
+      draw3DFrame(fracFrame);
+    }
+  });
+
+  try {
+    viewer.clipData = await loadNpz(c.data_url);
+    if (!viewer || viewer.clip.id !== c.id) return;       // navigated away mid-fetch
+    const N = viewer.clipData.pts3d.length;
+    viewer.colorsHex = trackColorsHex(N, viewer.clipData.object_ids);
+    viewer.colorsRGB = trackColorsRGB(N, viewer.clipData.object_ids);
+    const loading = document.getElementById('loading');
+    if (loading) loading.style.display = 'none';
+    const canvas3d = document.getElementById('canvas3d');
+    if (canvas3d) canvas3d.style.display = '';
+    init3DViewer();
+  } catch(e) {
+    const loading = document.getElementById('loading');
+    if (loading) loading.textContent = 'Error: ' + e.message;
+  }
+}
+
+function togglePlay() {
+  if (!viewer || !viewer.video) return;
+  if (viewer.video.paused) { viewer.video.play(); document.getElementById('pp').innerHTML = '&#9646;&#9646;'; }
+  else { viewer.video.pause(); document.getElementById('pp').innerHTML = '&#9654;'; }
+}
+function scrubTo(val) {
+  if (viewer && viewer.video && viewer.video.duration) viewer.video.currentTime = (val / 100) * viewer.video.duration;
+}
+
+// ============================================================
+// 3D
+// ============================================================
+function init3DViewer() {
+  const v = viewer; if (!v) return;
+  const canvas = document.getElementById('canvas3d');
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  v.renderer = new THREE.WebGLRenderer({canvas, antialias: true});
+  v.renderer.setClearColor(isLight ? 0xeeeee8 : 0x0d0d0d);
+  v.scene = new THREE.Scene();
+  v.camera = new THREE.PerspectiveCamera(50, 1, 0.01, 500);
+  v.camYaw = 0; v.camPitch = 0; v.camTarget = new THREE.Vector3(); v.camDist = 3;
+  v.isDragging = false; v.prevMouse = {x:0,y:0};
+
+  canvas.addEventListener('mousedown', e => { v.isDragging = true; v.prevMouse = {x: e.clientX, y: e.clientY}; activeViewer = v; });
+  canvas.addEventListener('contextmenu', e => e.preventDefault());
+  window.addEventListener('mouseup', () => { if (v) v.isDragging = false; });
+  canvas.addEventListener('mousemove', e => {
+    if (!v.isDragging) return;
+    v.camYaw -= (e.clientX - v.prevMouse.x) * 0.005;
+    v.camPitch -= (e.clientY - v.prevMouse.y) * 0.005;
+    v.camPitch = Math.max(-Math.PI/2+0.1, Math.min(Math.PI/2-0.1, v.camPitch));
+    v.prevMouse = {x: e.clientX, y: e.clientY};
+    updateOrbit();
+  });
+  canvas.addEventListener('wheel', e => {
+    v.camDist = Math.max(0.3, Math.min(100, v.camDist + e.deltaY * 0.02));
+    updateOrbit(); e.preventDefault();
+  }, {passive: false});
+  prepare3DViewer();
+}
+
+function updateOrbit() {
+  const v = viewer; if (!v) return;
+  v.camera.position.set(
+    v.camTarget.x + v.camDist * Math.sin(v.camYaw) * Math.cos(v.camPitch),
+    v.camTarget.y + v.camDist * Math.sin(v.camPitch),
+    v.camTarget.z + v.camDist * Math.cos(v.camYaw) * Math.cos(v.camPitch)
+  );
+  v.camera.lookAt(v.camTarget);
+  renderViewer();
+}
+
+function renderViewer() {
+  const v = viewer; if (!v || !v.renderer || !v.scene) return;
+  const box = document.getElementById('box3d'); if (!box) return;
+  const w = box.clientWidth, h = box.clientHeight;
+  if (w === 0 || h === 0) return;
+  v.renderer.setSize(w, h);
+  v.camera.aspect = w / h; v.camera.updateProjectionMatrix();
+  v.renderer.render(v.scene, v.camera);
+}
+
+function prepare3DViewer() {
+  const v = viewer; if (!v) return;
+  const cd = v.clipData; if (!cd) return;
+  while (v.scene.children.length) v.scene.remove(v.scene.children[0]);
+  v.dynamicGroup = null;
+
+  const allPts = [];
+  const pts = cd.pts3d, vis = cd.vis3d;
+  for (let n = 0; n < pts.length; n++) {
+    for (let t = 0; t < pts[n].length; t++) {
+      if (!vis[n][t]) continue;
+      const p = pts[n][t]; allPts.push([p[0], -p[1], -p[2]]);
+    }
+  }
+  if (cd.cam_pos) for (const p of cd.cam_pos) allPts.push([p[0], -p[1], -p[2]]);
+  if (allPts.length === 0) { renderViewer(); return; }
+
+  const xs = allPts.map(p=>p[0]).filter(x=>isFinite(x)).sort((a,b)=>a-b);
+  const ys = allPts.map(p=>p[1]).filter(x=>isFinite(x)).sort((a,b)=>a-b);
+  const zs = allPts.map(p=>p[2]).filter(x=>isFinite(x)).sort((a,b)=>a-b);
+  const xmin=xs[Math.floor(xs.length*0.02)], xmax=xs[Math.floor(xs.length*0.98)];
+  const ymin=ys[Math.floor(ys.length*0.02)], ymax=ys[Math.floor(ys.length*0.98)];
+  const zmin=zs[Math.floor(zs.length*0.02)], zmax=zs[Math.floor(zs.length*0.98)];
+  const cx=(xmin+xmax)/2, cy=(ymin+ymax)/2, cz=(zmin+zmax)/2;
+  const interval = Math.max(xmax-xmin, ymax-ymin, zmax-zmin);
+  v.sceneMeta = {cx, cy, cz, interval};
+
+  const isLt = document.documentElement.getAttribute('data-theme') === 'light';
+  const grid = new THREE.GridHelper(interval*2.4, 20, isLt?0xcccccc:0x333333, isLt?0xdddddd:0x222222);
+  grid.position.set(cx, ys[0], cz);
+  v.scene.add(grid);
+  v.camTarget.set(cx, cy, cz);
+  v.camDist = interval * 1.2;
+
+  if (cd.cam_fwd) {
+    const cf = cd.cam_fwd[0]; const cfd = [cf[0], -cf[1], -cf[2]];
+    v.camYaw = Math.atan2(cfd[0], cfd[2]) + Math.PI * 0.75; v.camPitch = 0.35;
+  } else { v.camYaw = Math.PI * 0.25; v.camPitch = 0.3; }
+  updateOrbit();
+  draw3DFrame(0);
+}
+
+function draw3DFrame(fracFrame) {
+  const v = viewer; if (!v || !v.sceneMeta || !v.clipData) return;
+  const cd = v.clipData; const {interval} = v.sceneMeta;
+  if (v.dynamicGroup) v.scene.remove(v.dynamicGroup);
+  v.dynamicGroup = new THREE.Group();
+
+  function lerpPt(arr, n, f0, f1, frac) {
+    const a = arr[n][f0], b = arr[n][f1];
+    return [a[0]+(b[0]-a[0])*frac, a[1]+(b[1]-a[1])*frac, a[2]+(b[2]-a[2])*frac];
+  }
+
+  const pts = cd.pts3d, vis = cd.vis3d;
+  const N = pts.length, T = pts[0].length;
+  const fi = Math.min(Math.floor(fracFrame), T-1);
+  const fiNext = Math.min(fi + 1, T - 1);
+  const frac = fracFrame - Math.floor(fracFrame);
+  const trailStart = Math.max(0, fi - TRAIL_3D);
+
+  for (let n = 0; n < N; n++) {
+    const c = v.colorsRGB[n];
+    const lineColor = new THREE.Color(c.r, c.g, c.b);
+    const lineMat = new THREE.LineBasicMaterial({color: lineColor, transparent: true, opacity: 0.9});
+    let seg = [];
+    for (let t = trailStart; t <= fi; t++) {
+      if (!vis[n][t]) {
+        if (seg.length >= 2) {
+          const sm = interpolateSpline3D(seg, SPLINE_SUBDIV);
+          const g = new THREE.BufferGeometry();
+          g.setAttribute('position', new THREE.Float32BufferAttribute(sm, 3));
+          v.dynamicGroup.add(new THREE.Line(g, lineMat));
+        }
+        seg = [];
+      } else {
+        const p = pts[n][t]; seg.push([p[0], -p[1], -p[2]]);
+      }
+    }
+    if (fi < T - 1 && frac > 0 && vis[n][fi] && vis[n][fiNext]) {
+      const ip = lerpPt(pts, n, fi, fiNext, frac);
+      if (seg.length > 0) seg.push([ip[0], -ip[1], -ip[2]]);
+    }
+    if (seg.length >= 2) {
+      const sm = interpolateSpline3D(seg, SPLINE_SUBDIV);
+      const g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.Float32BufferAttribute(sm, 3));
+      v.dynamicGroup.add(new THREE.Line(g, lineMat));
+    }
+  }
+
+  // Current-frame dots
+  const ptP = [], ptC = [];
+  for (let n = 0; n < N; n++) {
+    if (!vis[n][fi]) continue;
+    let px, py, pz;
+    if (fi < T - 1 && frac > 0 && vis[n][fiNext]) {
+      const ip = lerpPt(pts, n, fi, fiNext, frac);
+      px = ip[0]; py = -ip[1]; pz = -ip[2];
+    } else {
+      const p = pts[n][fi]; px = p[0]; py = -p[1]; pz = -p[2];
+    }
+    ptP.push(px, py, pz);
+    const c = v.colorsRGB[n]; ptC.push(c.r, c.g, c.b);
+  }
+  if (ptP.length) {
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(ptP, 3));
+    g.setAttribute('color', new THREE.Float32BufferAttribute(ptC, 3));
+    const ptSize = Math.max(0.005, interval * 0.004);
+    v.dynamicGroup.add(new THREE.Points(g, new THREE.PointsMaterial({vertexColors:true, size:ptSize, sizeAttenuation:true})));
+  }
+
+  // Camera trail + frustum
+  if (cd.cam_pos) {
+    const camPos = cd.cam_pos;
+    const ts = Math.max(0, fi - CAM_TRAIL);
+    const isLt = document.documentElement.getAttribute('data-theme') === 'light';
+    const trailCol = isLt ? 0x444444 : 0xcccccc;
+    const frustCol = isLt ? 0x2266bb : 0x66aaff;
+
+    const camPts = [];
+    for (let t = ts; t <= fi; t++) { const p = camPos[t]; camPts.push([p[0], -p[1], -p[2]]); }
+    if (fi < T - 1 && frac > 0) {
+      const a = camPos[fi], b = camPos[fiNext];
+      camPts.push([a[0]+(b[0]-a[0])*frac, -(a[1]+(b[1]-a[1])*frac), -(a[2]+(b[2]-a[2])*frac)]);
+    }
+    if (camPts.length >= 2) {
+      const sm = interpolateSpline3D(camPts, 4);
+      const g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.Float32BufferAttribute(sm, 3));
+      v.dynamicGroup.add(new THREE.Line(g, new THREE.LineBasicMaterial({color:trailCol, transparent:true, opacity:0.6})));
+    }
+
+    let cpx, cpy, cpz, fwd_r;
+    if (fi < T - 1 && frac > 0) {
+      const a = camPos[fi], b = camPos[fiNext];
+      cpx = a[0]+(b[0]-a[0])*frac; cpy = a[1]+(b[1]-a[1])*frac; cpz = a[2]+(b[2]-a[2])*frac;
+      const fa = cd.cam_fwd[fi], fb = cd.cam_fwd[fiNext];
+      fwd_r = [fa[0]+(fb[0]-fa[0])*frac, fa[1]+(fb[1]-fa[1])*frac, fa[2]+(fb[2]-fa[2])*frac];
+    } else {
+      cpx = camPos[fi][0]; cpy = camPos[fi][1]; cpz = camPos[fi][2]; fwd_r = cd.cam_fwd[fi];
+    }
+    const origin = new THREE.Vector3(cpx, -cpy, -cpz);
+    const fwd = new THREE.Vector3(fwd_r[0], -fwd_r[1], -fwd_r[2]).normalize();
+    const wup = new THREE.Vector3(0,1,0);
+    const right = new THREE.Vector3().crossVectors(fwd, wup).normalize();
+    if (right.length() < 0.01) right.set(1,0,0);
+    const up = new THREE.Vector3().crossVectors(right, fwd).normalize();
+    const fd = interval * 0.05;
+    const dim = cd.dim, aspect = dim[1]/dim[0];
+    const hH = fd*0.35, hW = hH*aspect;
+    const c0=origin.clone().add(fwd.clone().multiplyScalar(fd)).add(right.clone().multiplyScalar(-hW)).add(up.clone().multiplyScalar(hH));
+    const c1=origin.clone().add(fwd.clone().multiplyScalar(fd)).add(right.clone().multiplyScalar(hW)).add(up.clone().multiplyScalar(hH));
+    const c2=origin.clone().add(fwd.clone().multiplyScalar(fd)).add(right.clone().multiplyScalar(hW)).add(up.clone().multiplyScalar(-hH));
+    const c3=origin.clone().add(fwd.clone().multiplyScalar(fd)).add(right.clone().multiplyScalar(-hW)).add(up.clone().multiplyScalar(-hH));
+    const fp = [origin,c0,origin,c1,origin,c2,origin,c3,c0,c1,c1,c2,c2,c3,c3,c0];
+    const fg = new THREE.BufferGeometry().setFromPoints(fp);
+    v.dynamicGroup.add(new THREE.LineSegments(fg, new THREE.LineBasicMaterial({color:frustCol, transparent:true, opacity:0.85})));
+
+    if (v.video && v.video.videoWidth > 0) {
+      try {
+        const tc = document.createElement('canvas');
+        tc.width = 128; tc.height = Math.round(128/aspect);
+        tc.getContext('2d').drawImage(v.video, 0, 0, tc.width, tc.height);
+        const tex = new THREE.CanvasTexture(tc); tex.minFilter = THREE.LinearFilter;
+        const pg = new THREE.BufferGeometry();
+        pg.setAttribute('position', new THREE.Float32BufferAttribute([
+          c0.x,c0.y,c0.z, c1.x,c1.y,c1.z, c2.x,c2.y,c2.z,
+          c0.x,c0.y,c0.z, c2.x,c2.y,c2.z, c3.x,c3.y,c3.z], 3));
+        pg.setAttribute('uv', new THREE.Float32BufferAttribute([0,1,1,1,1,0,0,1,1,0,0,0], 2));
+        v.dynamicGroup.add(new THREE.Mesh(pg, new THREE.MeshBasicMaterial({map:tex, side:THREE.DoubleSide, transparent:true, opacity:0.9})));
+      } catch(e) {}
+    }
+  }
+  v.scene.add(v.dynamicGroup);
+  renderViewer();
+}
+
+// ============================================================
+// 2D overlay
+// ============================================================
+function draw2DFrame(fracFrame) {
+  const v = viewer; if (!v || !v.clipData || !v.clipData.tracks2d) return;
+  const cd = v.clipData;
+  const box = document.getElementById('rgb_box'); if (!box) return;
+  v.canvas2d.width = box.clientWidth; v.canvas2d.height = box.clientHeight;
+  const bw = box.clientWidth, bh = box.clientHeight;
+  const dim = cd.dim, vw = dim[1], vh = dim[0];
+  const scale = Math.min(bw/vw, bh/vh);
+  const rx = (bw-vw*scale)/2, ry = (bh-vh*scale)/2;
+
+  const ctx = v.ctx2d;
+  ctx.clearRect(0, 0, bw, bh);
+  const tracks = cd.tracks2d, vis = cd.vis2d;
+  const T = tracks.length, N = tracks[0].length;
+  const fi = Math.min(Math.floor(fracFrame), T-1);
+  const fiNext = Math.min(fi + 1, T - 1);
+  const frac = fracFrame - Math.floor(fracFrame);
+  const ts = Math.max(0, fi - TRAIL_2D);
+
+  for (let n = 0; n < N; n++) {
+    if (!vis[fi][n]) continue;
+    const trailPts = [], trailAlphas = [];
+    for (let t = ts; t <= fi; t++) {
+      if (!vis[t][n]) continue;
+      trailPts.push([tracks[t][n][0], tracks[t][n][1]]);
+      trailAlphas.push((t - ts) / TRAIL_2D);
+    }
+    if (fi < T - 1 && frac > 0 && vis[fiNext][n]) {
+      const lx = tracks[fi][n][0] + (tracks[fiNext][n][0] - tracks[fi][n][0]) * frac;
+      const ly = tracks[fi][n][1] + (tracks[fiNext][n][1] - tracks[fi][n][1]) * frac;
+      trailPts.push([lx, ly]); trailAlphas.push(1.0);
+    }
+    const col = v.colorsHex[n];
+    if (trailPts.length >= 2) {
+      const sm = interpolateSpline2D(trailPts, SPLINE_SUBDIV);
+      ctx.lineWidth = 1.6; ctx.strokeStyle = col;
+      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      for (let s = 1; s < sm.length; s++) {
+        const ai = (s / sm.length) * (trailAlphas.length - 1);
+        const af = Math.floor(ai), ac = Math.min(af + 1, trailAlphas.length - 1);
+        const a = trailAlphas[af] + (trailAlphas[ac] - trailAlphas[af]) * (ai - af);
+        ctx.globalAlpha = 0.3 + 0.6 * a;
+        ctx.beginPath();
+        ctx.moveTo(sm[s-1][0]*scale+rx, sm[s-1][1]*scale+ry);
+        ctx.lineTo(sm[s][0]*scale+rx, sm[s][1]*scale+ry);
+        ctx.stroke();
+      }
+    }
+    let dx, dy;
+    if (fi < T - 1 && frac > 0 && vis[fiNext][n]) {
+      dx = tracks[fi][n][0] + (tracks[fiNext][n][0] - tracks[fi][n][0]) * frac;
+      dy = tracks[fi][n][1] + (tracks[fiNext][n][1] - tracks[fi][n][1]) * frac;
+    } else { dx = tracks[fi][n][0]; dy = tracks[fi][n][1]; }
+    ctx.globalAlpha = 1.0; ctx.fillStyle = col;
+    ctx.beginPath(); ctx.arc(dx*scale+rx, dy*scale+ry, 2.5, 0, Math.PI*2); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
+
+// ============================================================
+// Keyboard nav
+// ============================================================
+let activeViewer = null;
+const keysDown = {};
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+  const k = e.key.toLowerCase();
+  if (['w','a','s','d','q','e','arrowup','arrowdown','arrowleft','arrowright'].includes(k)) { keysDown[k] = true; e.preventDefault(); }
+  if (e.key === ' ') { togglePlay(); e.preventDefault(); }
+  if (e.key === '[') goDelta(-1);
+  if (e.key === ']') goDelta(1);
+});
+document.addEventListener('keyup', e => { keysDown[e.key.toLowerCase()] = false; });
+(function camMoveLoop() {
+  if (activeViewer && activeViewer === viewer) {
+    const v = viewer;
+    if (v && v.camYaw !== undefined) {
+      const speed = 0.03 * v.camDist;
+      const fwdX = -Math.sin(v.camYaw), fwdZ = -Math.cos(v.camYaw);
+      const rightX = Math.cos(v.camYaw), rightZ = -Math.sin(v.camYaw);
+      let moved = false;
+      if (keysDown['w']||keysDown['arrowup']) { v.camTarget.x+=fwdX*speed; v.camTarget.z+=fwdZ*speed; moved=true; }
+      if (keysDown['s']||keysDown['arrowdown']) { v.camTarget.x-=fwdX*speed; v.camTarget.z-=fwdZ*speed; moved=true; }
+      if (keysDown['a']||keysDown['arrowleft']) { v.camTarget.x-=rightX*speed; v.camTarget.z-=rightZ*speed; moved=true; }
+      if (keysDown['d']||keysDown['arrowright']) { v.camTarget.x+=rightX*speed; v.camTarget.z+=rightZ*speed; moved=true; }
+      if (keysDown['q']) { v.camTarget.y-=speed; moved=true; }
+      if (keysDown['e']) { v.camTarget.y+=speed; moved=true; }
+      if (moved) updateOrbit();
+    }
+  }
+  requestAnimationFrame(camMoveLoop);
+})();
+
+init();
+</script>
+</body>
+</html>
